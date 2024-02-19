@@ -21,7 +21,7 @@ const { fetchOneMatch } = require('./scrapers/match/one');
 const { fetchMatchIds } = require('./scrapers/match/history'); // Added this. Doesn't currently work. See match history below...
 const { fetchOnePlayer } = require('./scrapers/player/one');
 const { fetchOneTeam } = require('./scrapers/team/one');
-const { fetchTwoTeam } = require('./scrapers/testing/one');
+const { fetchTwoTeam } = require('./scrapers/team/two');
 
 // Config Settings
 const PORT = process.env.PORT || 3000;
