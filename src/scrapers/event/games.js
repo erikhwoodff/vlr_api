@@ -6,7 +6,7 @@ const cheerio = require('cheerio');
 const idGenerator = require('../util').idGenerator;
 
 
-const fetchOneEvent = async (id) => {
+const fetchGamesEvent = async (id) => {
     // Validate input
     // make sure id is a string of numbers
     if (!id.match(/^[0-9]+$/)) throw new Error("Invalid ID");
