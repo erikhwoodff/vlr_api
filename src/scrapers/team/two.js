@@ -6,7 +6,7 @@ const cheerio = require('cheerio');
 const { idGenerator, AgentArray } = require('../util');
 
 
-const fetchOneTeam = async (id) => {
+const fetchTwoTeam = async (id) => {
     // Validate input
     // make sure id is a string of numbers
     if (!id.match(/^[0-9,]+$/)) throw new Error("Invalid ID");
@@ -93,4 +93,4 @@ const fetchOneTeam = async (id) => {
 }
 
 
-module.exports = { fetchOneTeam };
+module.exports = { fetchTwoTeam };
