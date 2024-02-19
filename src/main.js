@@ -248,6 +248,14 @@ app.get("/api", (req, res) => {
                 params: [],
                 returns: "Array of Team Objects"
             },
+            {
+                name: "History",
+                description: "Returns a list of match id's for a team",
+                url: "/api/history",
+                method: "GET",
+                params: [],
+                returns: "Array of Match IDs"
+            },
             
         ],
         info: {
