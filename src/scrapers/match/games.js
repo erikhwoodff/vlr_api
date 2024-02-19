@@ -21,15 +21,16 @@ const fetchGamesMatch = async (matchId) => {
                 $(".vm-stats-gamesnav-item.js-map-switch[data-game-id]").each((i, element) => {
                     const game_id = $(element).attr("data-game-id");
                     const mapNumber = $(element).data("href").split('=')[1];
-                    // Assuming the map name is in a text node following the map number span
-                    const mapNameElement = $(element).next('div').find('span').last(); // Updated selector to get the last span inside the next div
-                    const mapName = mapNameElement ? mapNameElement.text().trim() : ""; // Trim to remove whitespace
+
+                    // Find the map name by getting the text content of the span inside the following div
+                    // This assumes the map name span is the only span in the div
+                    const mapName = $(element).next().find('span').text().trim();
 
                     if (game_id !== "all" && mapNumber !== "all") {
                         Match.games.push({
                             game_id: game_id,
                             map_number: mapNumber,
-                            map_name: mapName // Add map name to our game object
+                            map_name: mapName // Updated to capture the map name correctly
                         });
                     }
                 });
