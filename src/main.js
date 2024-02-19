@@ -273,6 +273,7 @@ app.get("/api", (req, res) => {
                         name: "id",
                         type: "String",
                         description: "The id of the team to return"
+                    }
                 ],
                 returns: "Array of Match IDs"
             },
