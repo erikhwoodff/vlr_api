@@ -13,6 +13,8 @@ const winston = require('winston');
 const url = require('url');
 
 // Internal Libs
+const { fetchMatchIds } = require('./scrapers/match/match_history'); 
+
 const { fetchAllEvents } = require('./scrapers/event/all');
 const { fetchOneEvent } = require('./scrapers/event/one');
 const { fetchAllMatches } = require('./scrapers/match/all');
@@ -305,6 +307,19 @@ app.get("/api/log", async (req, res) => {
     req.on("close", () => {
         logClients = logClients.filter((client) => client !== res);
     });
+});
+// Match History
+app.get("/api/team/matches/:teamId", async (req, res) => {
+    try {
+        console.log("Fetching match IDs for team:", req.params.teamId); // Log the team ID
+        const teamId = req.params.teamId;
+        const matchIds = await fetchMatchIds(teamId);
+        console.log("Match IDs fetched:", matchIds); // Log the fetched match IDs
+        res.json({ status: "Success", data: matchIds });
+    } catch (error) {
+        console.error("Error fetching match IDs:", error); // Log any errors
+        res.status(500).json({ status: "Failed", error: error.message });
+    }
 });
 // Matches
 app.get("/api/match/:id", async (req, res) => {
