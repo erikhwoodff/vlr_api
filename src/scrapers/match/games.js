@@ -11,8 +11,8 @@ const fetchGamesMatch = async (matchId) => {
                 Match.match_id = matchId;
 
                 // Extract the Event
-                let rawSubEvent = $(".match-header-super .match-header-event-series").first().text();
-                Match.sub_event = rawSubEvent.replace(/\s+/g, ' ').trim(); 
+                let rawMainEvent = $(".match-header-super .match-header-event-series").first().text();
+                Match.sub_event = rawMainEvent.replace(/\s+/g, ' ').trim(); 
 
                 // Extract the Sub Event
                 let rawSubEvent = $(".match-header-super .match-header-event-series").first().text();
