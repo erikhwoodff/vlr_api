@@ -1,4 +1,3 @@
-// External Libs
 const axios = require('axios');
 const cheerio = require('cheerio');
 
@@ -9,21 +8,21 @@ const fetchGamesMatch = async (matchId) => {
                 let $ = cheerio.load(response.data);
                 const Match = {};
                 Match.match_id = matchId;
-                
+
                 // Scrape the event name and clean up whitespace and newline characters
-                let rawEventName = $(".match-header-event .wf-title").first().text();
+                let rawEventName = $(".match-header-super .wf-title").first().text();
                 Match.event_name = rawEventName.replace(/\s+/g, ' ').trim();
-                
+
                 // Scrape the sub-event and clean up whitespace and newline characters
-                let rawSubEvent = $(".match-header-event .match-header-event-series").first().text();
+                let rawSubEvent = $(".match-header-super .match-header-event-series").first().text();
                 Match.sub_event = rawSubEvent.replace(/\s+/g, ' ').trim();
-                
-                // Scrape the event ID
-                const eventHref = $(".match-header-event > a").attr("href");
+
+                // Scrape the event ID from within the 'match-header-super' class
+                const eventHref = $(".match-header-super .match-header-event > a").attr("href");
                 Match.event_id = eventHref ? eventHref.split('/')[2] : null;
-                               
+
                 // Scrape the event UTC timestamp
-                Match.event_utc_ts = $(".match-header-date").first().data("utc-ts");
+                Match.event_utc_ts = $(".match-header-super .match-header-date").first().data("utc-ts");
 
                 Match.games = [];
 
