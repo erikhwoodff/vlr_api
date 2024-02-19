@@ -16,15 +16,17 @@ const fetchGamesMatch = async (matchId) => {
                 // Extract match_id from the URL
                 Match.match_id = matchId;
 
-                // Extract game_ids and map numbers
+                // Extract game_ids and map numbers, ignoring the "all" entries
                 Match.games = [];
                 $(".vm-stats-gamesnav-item.js-map-switch[data-game-id]").each((i, element) => {
                     const game_id = $(element).attr("data-game-id");
                     const mapNumber = $(element).data("href").split('=')[1];
-                    Match.games.push({
-                        game_id: game_id,
-                        map_number: mapNumber
-                    });
+                    if (game_id !== "all" && mapNumber !== "all") {
+                        Match.games.push({
+                            game_id: game_id,
+                            map_number: mapNumber
+                        });
+                    }
                 });
 
                 resolve(Match);
