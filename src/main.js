@@ -242,6 +242,20 @@ app.get("/api", (req, res) => {
                 returns: "Team Object"
             },
             {
+                name: "Team_Test",
+                description: "Returns a single team",
+                url: "/api/testing/:id",
+                method: "GET",
+                params: [
+                    {
+                        name: "id",
+                        type: "String",
+                        description: "The id of the team to return"
+                    }
+                ],
+                returns: "Team Object"
+            },
+            {
                 name: "Teams",
                 description: "Returns a list of all teams",
                 url: "/api/teams",
