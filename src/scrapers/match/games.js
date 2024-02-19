@@ -23,8 +23,8 @@ const fetchGamesMatch = async (matchId) => {
                 Match.event_id = eventHref ? eventHref.split('/')[2] : null;
 
                 // Extract the timestamp from the data-utc-ts attribute
-                const eventDateElement = $("div.match-header-date");
-                Match.event_utc_ts = eventDateElement ? eventDateElement.data("utc-ts") : null;
+                const eventDateElement = $(".moment-tz-convert").first();
+                Match.event_utc_ts = eventDateElement.length ? eventDateElement.data("utc-ts") : null;
 
                 // Logic to extract games data
                 Match.games = [];
