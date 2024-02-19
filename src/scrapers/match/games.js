@@ -9,14 +9,20 @@ const fetchGamesMatch = async (matchId) => {
                 let $ = cheerio.load(response.data);
                 const Match = {};
                 Match.match_id = matchId;
-                
-                // Scrape additional match details with checks for undefined
-                const eventHref = $(".match-header-event > a").attr("href");
+
+                // Update the selectors based on the provided HTML structure
+                Match.event_name = $("div.match-header-super .match-header-event").text().trim();
+                Match.sub_event = $("div.match-header-super .match-header-event-series").text().trim();
+
+                // Extract the event ID from the href attribute
+                const eventHref = $("div.match-header-super a.match-header-event").attr("href");
                 Match.event_id = eventHref ? eventHref.split('/')[2] : null;
-                Match.event_name = $(".match-header .wf-title").text().trim();
-                Match.sub_event = $(".match-header-event-series").text().trim();
-                const eventDateElement = $(".match-header-date");
+
+                // Extract the timestamp from the data-utc-ts attribute
+                const eventDateElement = $("div.match-header-date");
                 Match.event_utc_ts = eventDateElement ? eventDateElement.data("utc-ts") : null;
+
+                // Logic to extract games data
                 Match.games = [];
 
                 $(".vm-stats-gamesnav-item.js-map-switch[data-game-id]").each((i, element) => {
