@@ -19,9 +19,8 @@ const fetchGamesMatch = async (matchId) => {
                 Match.sub_event = rawSubEvent.replace(/\s+/g, ' ').trim();
                 
                 // Scrape the event ID
-                let eventHref = $(".match-header-event > a").first().attr("href");
-                Match.event_id = eventHref ? eventHref.split('/')[2] : null;
-                
+                const eventHref = $(".match-header-event > a").attr("href");
+                               
                 // Scrape the event UTC timestamp
                 Match.event_utc_ts = $(".match-header-date").first().data("utc-ts");
 
