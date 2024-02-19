@@ -11,7 +11,13 @@ const fetchGamesMatch = async (matchId) => {
                 let $ = cheerio.load(response.data);
                 const Match = {};
                 Match.match_id = matchId;
+                // Scrape additional match details
+                Match.event_name = $(".match-header .wf-title").text().trim();
+                Match.sub_event = $(".match-header-event-series").text().trim();
+                Match.event_id = $(".match-header-event > a").attr("href").split('/')[2];
+                Match.event_utc_ts = $(".match-header-date").data("utc-ts");
                 Match.games = [];
+
 
                 $(".vm-stats-gamesnav-item.js-map-switch[data-game-id]").each((i, element) => {
                     const game_id = $(element).attr("data-game-id");
