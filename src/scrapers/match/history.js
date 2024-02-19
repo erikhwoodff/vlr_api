@@ -1,5 +1,10 @@
+const axios = require('axios');
+const cheerio = require('cheerio');
+
 const fetchMatchIds = async (teamId) => {
-    if (!teamId.match(/^[0-9]+$/)) throw new Error("Invalid ID");
+    if (!teamId.match(/^[0-9]+$/)) {
+        throw new Error("Invalid ID");
+    }
 
     try {
         // Fetch the page
@@ -14,9 +19,11 @@ const fetchMatchIds = async (teamId) => {
             const href = $(element).attr("href");
             console.log(`Processing href: ${href}`);
             
-            // Check if href is valid and contains numbers after /matches/
+            // Assuming the match ID is the second segment in the URL path
+            // Split the href and check if the second segment is a number
             const parts = href.split('/');
-            const matchId = parts.length > 2 && parts[2].match(/^[0-9]+$/) ? parts[2] : null;
+            const matchId = parts.length > 2 && /^\d+$/.test(parts[2]) ? parts[2] : null;
+            
             console.log(`Extracted matchId: ${matchId}`);
             if (matchId) {
                 matchIds.push(matchId);
@@ -32,3 +39,4 @@ const fetchMatchIds = async (teamId) => {
 };
 
 module.exports = { fetchMatchIds };
+
