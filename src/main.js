@@ -16,7 +16,7 @@ const url = require('url');
 
 const { fetchAllEvents } = require('./scrapers/event/all');
 const { fetchOneEvent } = require('./scrapers/event/one');
-const { fetchGamesEvent } = require('./scrapers/event/games');
+const { fetchGamesMatch } = require('./scrapers/match/games');
 const { fetchAllMatches } = require('./scrapers/match/all');
 const { fetchOneMatch } = require('./scrapers/match/one');
 const { fetchMatchIds } = require('./scrapers/match/history'); // Added this. Doesn't currently work. See match history below...
@@ -320,13 +320,11 @@ app.get("/api/event/:id", async (req, res) => {
         res.json({ status: "Failed", error: err });
     });
 });
-// Games
+// Games (copy of Match)
 app.get("/api/games/:id", async (req, res) => {
-    const id = req.params.id;
-    fetchOneEvent(req.params.id).then((data) => {
+    fetchGamesMatch(req.params.id).then((data) => {
         res.json({ status: "Success", data: data });
     }).catch((err) => {
-        console.error(err);
         res.json({ status: "Failed", error: err });
     });
 });
