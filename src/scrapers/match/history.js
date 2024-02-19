@@ -18,6 +18,10 @@ const fetchMatchIds = async (teamId) => {
         matchLinks.each((i, element) => {
             const href = $(element).attr("href");
             const matchId = href.split('/')[1]; // Assuming the match ID is always the second element after split
+            if (matchId && matchId.match(/^[0-9]+$/)) { // Ensure that matchId is defined and only numbers are pushed as IDs
+                matchIds.push(matchId);
+}
+
             if (matchId.match(/^[0-9]+$/)) { // Ensure that only numbers are pushed as IDs
                 matchIds.push(matchId);
             }
