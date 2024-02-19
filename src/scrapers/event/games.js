@@ -12,7 +12,7 @@ const fetchGamesEvent = async (id) => {
     if (!id.match(/^[0-9]+$/)) throw new Error("Invalid ID");
     return new Promise(async (resolve, reject) => {
         // fetch the page
-        axios.get(`https://www.vlr.gg/event/${id}`)
+        axios.get(`https://www.vlr.gg/${id}`)
             .then((response) => {
                 // parse the page
                 let $ = cheerio.load(response.data);
