@@ -18,6 +18,7 @@ const { fetchAllEvents } = require('./scrapers/event/all');
 const { fetchOneEvent } = require('./scrapers/event/one');
 const { fetchAllMatches } = require('./scrapers/match/all');
 const { fetchOneMatch } = require('./scrapers/match/one');
+const { fetchOneMatch } = require('./scrapers/match/two');
 const { fetchMatchIds } = require('./scrapers/match/history'); // Added this. Doesn't currently work. See match history below...
 const { fetchOnePlayer } = require('./scrapers/player/one');
 const { fetchOneTeam } = require('./scrapers/team/one');
@@ -408,6 +409,18 @@ app.get("/api/rankings/:region", async (req, res) => {
 });
 // Teams
 app.get("/api/team/:id", async (req, res) => {
+    fetchOneTeam(req.params.id).then((data) => {
+        res.json({ status: "Success", data: data });
+    }).catch((err) => {
+        console.error(err);
+        res.json({ status: "Failed", error: err });
+    });
+});
+app.get("/api/teams", async (req, res) => {
+    res.json({ status: "Success", data: "WIP" });
+});
+// Teams (TEST PURPOSES)
+app.get("/api/testing/:id", async (req, res) => {
     fetchOneTeam(req.params.id).then((data) => {
         res.json({ status: "Success", data: data });
     }).catch((err) => {
