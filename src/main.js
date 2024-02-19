@@ -16,7 +16,7 @@ const url = require('url');
 
 const { fetchAllEvents } = require('./scrapers/event/all');
 const { fetchOneEvent } = require('./scrapers/event/one');
-const { fetchGameEvent } = require('./scrapers/event/games');
+const { fetchGamesEvent } = require('./scrapers/event/games');
 const { fetchAllMatches } = require('./scrapers/match/all');
 const { fetchOneMatch } = require('./scrapers/match/one');
 const { fetchMatchIds } = require('./scrapers/match/history'); // Added this. Doesn't currently work. See match history below...
