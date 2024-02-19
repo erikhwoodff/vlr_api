@@ -19,14 +19,13 @@ const fetchMatchIds = async (teamId) => {
             const href = $(element).attr("href");
             console.log(`Processing href: ${href}`);
             
-            // Assuming the match ID is the second segment in the URL path
-            // Split the href and check if the second segment is a number
+            // Split the href and extract the match ID, which is the second segment
             const parts = href.split('/');
-            const matchId = parts.length > 2 && /^\d+$/.test(parts[2]) ? parts[2] : null;
-            
-            console.log(`Extracted matchId: ${matchId}`);
-            if (matchId) {
+            // Check if the second segment is a number, which is the match ID
+            if (parts.length > 1 && /^\d+$/.test(parts[1])) {
+                const matchId = parts[1];
                 matchIds.push(matchId);
+                console.log(`Extracted matchId: ${matchId}`);
             }
         });
 
@@ -39,4 +38,3 @@ const fetchMatchIds = async (teamId) => {
 };
 
 module.exports = { fetchMatchIds };
-
