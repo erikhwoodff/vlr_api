@@ -10,9 +10,13 @@ const fetchGamesMatch = async (matchId) => {
                 const Match = {};
                 Match.match_id = matchId;
 
-                // Update the selectors based on the provided HTML structure
-                Match.event_name = $("div.match-header-super .match-header-event").text().trim();
-                Match.sub_event = $("div.match-header-super .match-header-event-series").text().trim();
+                // Extract the Event
+                let rawSubEvent = $(".match-header-super .match-header-event-series").first().text();
+                Match.sub_event = rawSubEvent.replace(/\s+/g, ' ').trim(); 
+
+                // Extract the Sub Event
+                let rawSubEvent = $(".match-header-super .match-header-event-series").first().text();
+                Match.sub_event = rawSubEvent.replace(/\s+/g, ' ').trim(); 
 
                 // Extract the event ID from the href attribute
                 const eventHref = $("div.match-header-super a.match-header-event").attr("href");
