@@ -20,6 +20,7 @@ const fetchGamesMatch = async (matchId) => {
                 
                 // Scrape the event ID
                 const eventHref = $(".match-header-event > a").attr("href");
+                Match.event_id = eventHref ? eventHref.split('/')[2] : null;
                                
                 // Scrape the event UTC timestamp
                 Match.event_utc_ts = $(".match-header-date").first().data("utc-ts");
