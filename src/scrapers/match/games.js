@@ -1,5 +1,3 @@
-
-
 // External Libs
 const axios = require('axios');
 const cheerio = require('cheerio');
@@ -11,17 +9,20 @@ const fetchGamesMatch = async (matchId) => {
                 let $ = cheerio.load(response.data);
                 const Match = {};
                 Match.match_id = matchId;
-                // Scrape additional match details
+                
+                // Scrape additional match details with checks for undefined
+                const eventHref = $(".match-header-event > a").attr("href");
+                Match.event_id = eventHref ? eventHref.split('/')[2] : null;
                 Match.event_name = $(".match-header .wf-title").text().trim();
                 Match.sub_event = $(".match-header-event-series").text().trim();
-                Match.event_id = $(".match-header-event > a").attr("href").split('/')[2];
-                Match.event_utc_ts = $(".match-header-date").data("utc-ts");
+                const eventDateElement = $(".match-header-date");
+                Match.event_utc_ts = eventDateElement ? eventDateElement.data("utc-ts") : null;
                 Match.games = [];
-
 
                 $(".vm-stats-gamesnav-item.js-map-switch[data-game-id]").each((i, element) => {
                     const game_id = $(element).attr("data-game-id");
-                    const mapNumber = $(element).data("href").split('=')[1];
+                    const href = $(element).data("href");
+                    const mapNumber = href ? href.split('=')[1] : null;
 
                     // Skip if the game_id or mapNumber is 'all'
                     if (game_id === "all" || mapNumber === "all") return;
