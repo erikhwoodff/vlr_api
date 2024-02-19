@@ -1,15 +1,32 @@
-const express = require('express');
-const router = express.Router();
-const { fetchMatchIds } = require('../scrapers/match/match_history');
+const axios = require('axios');
+const cheerio = require('cheerio');
 
-router.get('/api/team/matches/:teamId', async (req, res) => {
+const fetchMatchIds = async (teamId) => {
+    // Validate input
+    if (!teamId.match(/^[0-9]+$/)) throw new Error("Invalid ID");
+
     try {
-        const teamId = req.params.teamId;
-        const matchIds = await fetchMatchIds(teamId);
-        res.json({ matchIds });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
+        // Fetch the page
+        const response = await axios.get(`https://www.vlr.gg/team/matches/${teamId}`);
+        // Parse the page
+        const $ = cheerio.load(response.data);
 
-module.exports = router;
+        // Get all Matches
+        const matchIds = [];
+        const matchLinks = $(".col.mod-1 .wf-card a");
+
+        matchLinks.each((i, element) => {
+            const href = $(element).attr("href");
+            const matchId = href.split('/')[1]; // Assuming the match ID is always the second element after split
+            if (matchId.match(/^[0-9]+$/)) { // Ensure that only numbers are pushed as IDs
+                matchIds.push(matchId);
+            }
+        });
+
+        return matchIds;
+    } catch (err) {
+        throw err;
+    }
+};
+
+module.exports = { fetchMatchIds };
