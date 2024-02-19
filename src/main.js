@@ -13,12 +13,12 @@ const winston = require('winston');
 const url = require('url');
 
 // Internal Libs
-const { fetchMatchIds } = require('./scrapers/match/match_history'); 
 
 const { fetchAllEvents } = require('./scrapers/event/all');
 const { fetchOneEvent } = require('./scrapers/event/one');
 const { fetchAllMatches } = require('./scrapers/match/all');
 const { fetchOneMatch } = require('./scrapers/match/one');
+const { fetchMatchIds } = require('./scrapers/match/history'); 
 const { fetchOnePlayer } = require('./scrapers/player/one');
 const { fetchOneTeam } = require('./scrapers/team/one');
 
@@ -309,7 +309,7 @@ app.get("/api/log", async (req, res) => {
     });
 });
 // Match History
-app.get("/api/team/matches/:teamId", async (req, res) => {
+app.get("/api/history/:teamId", async (req, res) => {
     try {
         console.log("Fetching match IDs for team:", req.params.teamId); // Log the team ID
         const teamId = req.params.teamId;
