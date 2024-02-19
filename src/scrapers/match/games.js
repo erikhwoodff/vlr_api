@@ -21,14 +21,13 @@ const fetchGamesMatch = async (matchId) => {
                     // Skip if the game_id or mapNumber is 'all'
                     if (game_id === "all" || mapNumber === "all") return;
 
-                    // The map name seems to be the text node immediately following the map number span
-                    // This will get the text node directly after the span containing the map number
-                    let mapName = $(element).next('div').find('span').first().next().text().trim();
+                    // Using the .map class to find the map name
+                    let mapName = $(`.vm-stats-container .vm-stats-game[data-game-id='${game_id}']`).find(".map").text().trim().split("\t")[0].trim();
 
                     Match.games.push({
                         game_id: game_id,
                         map_number: mapNumber,
-                        map_name: mapName
+                        map_name: mapName // Using the map name found using the .map class
                     });
                 });
 
