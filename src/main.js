@@ -18,10 +18,10 @@ const { fetchAllEvents } = require('./scrapers/event/all');
 const { fetchOneEvent } = require('./scrapers/event/one');
 const { fetchAllMatches } = require('./scrapers/match/all');
 const { fetchOneMatch } = require('./scrapers/match/one');
-const { fetchOneMatch } = require('./scrapers/match/two');
 const { fetchMatchIds } = require('./scrapers/match/history'); // Added this. Doesn't currently work. See match history below...
 const { fetchOnePlayer } = require('./scrapers/player/one');
 const { fetchOneTeam } = require('./scrapers/team/one');
+const { fetchTwoTeam } = require('./scrapers/testing/one');
 
 // Config Settings
 const PORT = process.env.PORT || 3000;
@@ -421,7 +421,7 @@ app.get("/api/teams", async (req, res) => {
 });
 // Teams (TEST PURPOSES)
 app.get("/api/testing/:id", async (req, res) => {
-    fetchOneTeam(req.params.id).then((data) => {
+    fetchTwoTeam(req.params.id).then((data) => {
         res.json({ status: "Success", data: data });
     }).catch((err) => {
         console.error(err);
