@@ -22,15 +22,16 @@ const fetchGamesMatch = async (matchId) => {
                     const game_id = $(element).attr("data-game-id");
                     const mapNumber = $(element).data("href").split('=')[1];
 
-                    // Find the map name by getting the text content of the span inside the following div
-                    // This assumes the map name span is the only span in the div
-                    const mapName = $(element).next().find('span').text().trim();
+                    // Assuming the map name is the next text node after the span containing the map number
+                    const mapName = $(element).next('div').contents().filter(function() {
+                        return this.type === 'text';
+                    }).text().trim();
 
-                    if (game_id !== "all" && mapNumber !== "all") {
+                    if (game_id !== "all" && mapNumber !== "all" && mapName) {
                         Match.games.push({
                             game_id: game_id,
                             map_number: mapNumber,
-                            map_name: mapName // Updated to capture the map name correctly
+                            map_name: mapName // Add map name to our game object
                         });
                     }
                 });
@@ -44,5 +45,4 @@ const fetchGamesMatch = async (matchId) => {
 }
 
 module.exports = { fetchGamesMatch };
-
 
