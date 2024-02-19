@@ -21,7 +21,9 @@ const fetchGamesMatch = async (matchId) => {
                 $(".vm-stats-gamesnav-item.js-map-switch[data-game-id]").each((i, element) => {
                     const game_id = $(element).attr("data-game-id");
                     const mapNumber = $(element).data("href").split('=')[1];
-                    const mapName = $(element).next().text().trim(); // Assuming the map name is the next element after our game div
+                    // Assuming the map name is in a text node following the map number span
+                    const mapNameElement = $(element).next('div').find('span').last(); // Updated selector to get the last span inside the next div
+                    const mapName = mapNameElement ? mapNameElement.text().trim() : ""; // Trim to remove whitespace
 
                     if (game_id !== "all" && mapNumber !== "all") {
                         Match.games.push({
@@ -41,4 +43,5 @@ const fetchGamesMatch = async (matchId) => {
 }
 
 module.exports = { fetchGamesMatch };
+
 
