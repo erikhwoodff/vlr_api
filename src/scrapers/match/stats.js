@@ -93,8 +93,9 @@ const fetchStatsMatch = async (matchId) => {
                                 
                                 // Assign to Player.stats using the cleaned stat name.
                                 Player.stats[statName] = statValue;
-                        });
-                    
+                            } 
+                        }); // This closes the 'each' for the stats
+                        
                         game.players.push(Player);
                     });
 
