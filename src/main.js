@@ -17,6 +17,7 @@ const url = require('url');
 const { fetchAllEvents } = require('./scrapers/event/all');
 const { fetchOneEvent } = require('./scrapers/event/one');
 const { fetchGamesMatch } = require('./scrapers/match/games');
+const { fetchStatsMatch } = require('./scrapers/match/stats');
 const { fetchAllMatches } = require('./scrapers/match/all');
 const { fetchOneMatch } = require('./scrapers/match/one');
 const { fetchMatchIds } = require('./scrapers/match/history'); // Added this. Doesn't currently work. See match history below...
@@ -172,7 +173,21 @@ app.get("/api", (req, res) => {
                     {
                         name: "id",
                         type: "String",
-                        description: "The id of the event to return"
+                        description: "The id of the match to return"
+                    }
+                ],
+                returns: "Array of Games Objects"
+            },
+            {
+                name: "Games",
+                description: "Returns a list of all events",
+                url: "/api/game_stats/:id",
+                method: "GET",
+                params: [
+                    {
+                        name: "id",
+                        type: "String",
+                        description: "The id of the match to return"
                     }
                 ],
                 returns: "Array of Games Objects"
@@ -322,6 +337,14 @@ app.get("/api/event/:id", async (req, res) => {
 });
 // Games (copy of Match)
 app.get("/api/games/:id", async (req, res) => {
+    fetchGamesMatch(req.params.id).then((data) => {
+        res.json({ status: "Success", data: data });
+    }).catch((err) => {
+        res.json({ status: "Failed", error: err });
+    });
+});
+// Game_Stats (still enter the match id)
+app.get("/api/game_stats/:id", async (req, res) => {
     fetchGamesMatch(req.params.id).then((data) => {
         res.json({ status: "Success", data: data });
     }).catch((err) => {
