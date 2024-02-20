@@ -73,24 +73,26 @@ const fetchStatsMatch = async (matchId) => {
                     
                         // Extract each stat for the player
                         $(playerElement).find("td[class*='mod-stat']").each((statIndex, statElement) => {
-                            // Safely get the class name containing the stat
+                            // The class list contains all classes for the statElement.
                             const classList = $(statElement).attr('class').split(' ');
+                            // Find the specific class that contains the stat identifier.
                             const statClass = classList.find(cls => cls.includes('mod-vlr'));
-                            // If a statClass isn't found, or doesn't contain a '-', skip this element
+                            // Skip this stat element if it doesn't contain the stat identifier.
                             if (!statClass || !statClass.includes('-')) return;
-                        
-                            const statNameParts = statClass.split('-');
-                            // Check if statNameParts has the expected length
-                            if (statNameParts.length < 3) return;
-                        
-                            const statName = statNameParts[2]; // This is the stat name
-                            let statValue = $(statElement).find('.stats-sq').text();
-                        
-                            // Clean up the statValue by removing newlines, tabs, and multiple spaces
-                            statValue = statValue.replace(/[\n\t]+/g, '').trim(); // Remove newlines and tabs
-                            statValue = statValue.replace(/\s\s+/g, ' '); // Replace multiple spaces with a single space
-                        
-                            Player.stats[statName] = statValue;
+                            
+                            // Extract the stat name, which should be the part after 'mod-vlr-'.
+                            const statName = statClass.split('-').pop(); // This should give 'kills', 'deaths', or 'assists'.
+                            
+                            // Check if it's the combined stat we want (represented by 'mod-both').
+                            const isCombinedStat = $(statElement).find('.side.mod-both').length > 0;
+                            // If it's a combined stat, extract it; otherwise, skip.
+                            if (isCombinedStat) {
+                                let statValue = $(statElement).find('.side.mod-both').first().text();
+                                // Clean up the statValue by removing newlines, tabs, and multiple spaces.
+                                statValue = cleanString(statValue);
+                                
+                                // Assign to Player.stats using the cleaned stat name.
+                                Player.stats[statName] = statValue;
                         });
                     
                         game.players.push(Player);
