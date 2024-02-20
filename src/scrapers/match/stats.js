@@ -75,62 +75,64 @@ const fetchStatsMatch = async (matchId) => {
                                 t: t,
                                 ot: ot
                             };
-                            
-                        switch (i) {
-                            case 0:
-                                Player.statsadvanced.kdr = data;
-                                Player.stats.kdr = both;
-                                break;
-                            case 1:
-                                Player.statsadvanced.acs = data;
-                                Player.stats.acs = both;
-                                break;
-                            case 2:
-                                Player.statsadvanced.k = data;
-                                Player.stats.k = both;
-                                break;
-                            case 3:
-                                Player.statsadvanced.d = data;
-                                Player.stats.d = both;
-                                break;
-                            case 4:
-                                Player.statsadvanced.a = data;
-                                Player.stats.a = both;
-                                break;
-                            case 5:
-                                Player.statsadvanced.kdb = data;
-                                Player.stats.kdb = both;
-                                break;
-                            case 6:
-                                Player.statsadvanced.kast = data;
-                                Player.stats.kast = both;
-                                break;
-                            case 7:
-                                Player.statsadvanced.adr = data;
-                                Player.stats.adr = both;
-                                break;
-                            case 8:
-                                Player.statsadvanced.hs = data;
-                                Player.stats.hs = both;
-                                break;
-                            case 9:
-                                Player.statsadvanced.fk = data;
-                                Player.stats.fk = both;
-                                break;
-                            case 10:
-                                Player.statsadvanced.fd = data;
-                                Player.stats.fd = both;
-                                break;
-                            case 11:
-                                Player.statsadvanced.fkdb = data;
-                                Player.stats.fkdb = both;
-                                break;
-                            default:
-                                break;
-                        }
+                            switch (i) {
+                                case 0:
+                                    Player.statsadvanced.kdr = data;
+                                    Player.stats.kdr = both;
+                                    break;
+                                case 1:
+                                    Player.statsadvanced.acs = data;
+                                    Player.stats.acs = both;
+                                    break;
+                                case 2:
+                                    Player.statsadvanced.k = data;
+                                    Player.stats.k = both;
+                                    break;
+                                case 3:
+                                    Player.statsadvanced.d = data;
+                                    Player.stats.d = both;
+                                    break;
+                                case 4:
+                                    Player.statsadvanced.a = data;
+                                    Player.stats.a = both;
+                                    break;
+                                case 5:
+                                    Player.statsadvanced.kdb = data;
+                                    Player.stats.kdb = both;
+                                    break;
+                                case 6:
+                                    Player.statsadvanced.kast = data;
+                                    Player.stats.kast = both;
+                                    break;
+                                case 7:
+                                    Player.statsadvanced.adr = data;
+                                    Player.stats.adr = both;
+                                    break;
+                                case 8:
+                                    Player.statsadvanced.hs = data;
+                                    Player.stats.hs = both;
+                                    break;
+                                case 9:
+                                    Player.statsadvanced.fk = data;
+                                    Player.stats.fk = both;
+                                    break;
+                                case 10:
+                                    Player.statsadvanced.fd = data;
+                                    Player.stats.fd = both;
+                                    break;
+                                case 11:
+                                    Player.statsadvanced.fkdb = data;
+                                    Player.stats.fkdb = both;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        });
+
+                        game.players.push(Player);
                     });
 
-                    Match.players.push(Player);
+                    Match.games.push(game);
                 });
 
                 resolve(Match);
@@ -142,3 +144,4 @@ const fetchStatsMatch = async (matchId) => {
 }
 
 module.exports = { fetchStatsMatch };
+
