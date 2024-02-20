@@ -35,7 +35,7 @@ const fetchStatsMatch = async (matchId) => {
                     const Player = {};
                     Player.name = $(element).find(".mod-player a div:nth-child(1)").text().trim();
                     Player.team = $(element).find(".mod-player a div:nth-child(2)").text().trim();
-                    Player.link = `https://www.vlr.gg${$(element).find(".mod-player a").attr("href")}`;
+                    Player.player_id = $(element).find(".mod-player a").attr("href").split('/')[2];
                     Player.statsadvanced = {};
                     Player.stats = {};
 
