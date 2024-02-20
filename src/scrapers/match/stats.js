@@ -1,6 +1,10 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
+function cleanString(str) {
+    return str.replace(/[\n\t]/g, '').trim().replace(/\s\s+/g, ' ');
+}
+
 const fetchStatsMatch = async (matchId) => {
     return new Promise((resolve, reject) => {
         axios.get(`https://www.vlr.gg/${matchId}`)
@@ -56,8 +60,9 @@ const fetchStatsMatch = async (matchId) => {
                         if ($(playerElement).find(".mod-player").text().trim() === "") return;
                     
                         const Player = {};
-                        Player.name = $(playerElement).find(".mod-player").text().trim(); // Assuming the player's name is within .mod-player
-                                            Player.team = $(playerElement).find(".mod-player a div:nth-child(2)").text().trim();
+                        const playerNameWithExtra = $(playerElement).find(".mod-player").text();
+                        const playerName = cleanString(playerNameWithExtra); // Cleaned player name
+                        
                         const playerLink = $(playerElement).find(".mod-player a").attr("href");
                         Player.player_id = playerLink ? playerLink.split('/')[2] : null;
                         Player.stats = {};
