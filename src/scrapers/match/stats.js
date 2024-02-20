@@ -69,14 +69,18 @@ const fetchStatsMatch = async (matchId) => {
                             const statClass = classList.find(cls => cls.includes('mod-vlr'));
                             // If a statClass isn't found, or doesn't contain a '-', skip this element
                             if (!statClass || !statClass.includes('-')) return;
-                    
+                        
                             const statNameParts = statClass.split('-');
                             // Check if statNameParts has the expected length
                             if (statNameParts.length < 3) return;
-                    
+                        
                             const statName = statNameParts[2]; // This is the stat name
-                            const statValue = $(statElement).find('.stats-sq').text().trim();
-                    
+                            let statValue = $(statElement).find('.stats-sq').text();
+                        
+                            // Clean up the statValue by removing newlines, tabs, and multiple spaces
+                            statValue = statValue.replace(/[\n\t]+/g, '').trim(); // Remove newlines and tabs
+                            statValue = statValue.replace(/\s\s+/g, ' '); // Replace multiple spaces with a single space
+                        
                             Player.stats[statName] = statValue;
                         });
                     
