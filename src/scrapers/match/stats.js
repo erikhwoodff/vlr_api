@@ -25,31 +25,57 @@ const fetchStatsMatch = async (matchId) => {
                 const eventDateElement = $(".moment-tz-convert").first();
                 Match.event_utc_ts = eventDateElement.length ? eventDateElement.data("utc-ts") : null;
 
-                // Initialize the players array
-                Match.players = [];
+                // Initialize the games array
+                Match.games = [];
 
-                // Iterate over each player row in the table
-                $(".wf-table-inset.mod-overview tr").each((index, element) => {
-                    if ($(element).find(".mod-player a div:nth-child(1)").text().trim() === "") return;
+                // Iterate over each game
+                $(".vm-stats-gamesnav-item.js-map-switch[data-game-id]").each((i, element) => {
+                    const game_id = $(element).attr("data-game-id");
+                    const href = $(element).data("href");
+                    const mapNumber = href ? href.split('=')[1] : null;
 
-                    const Player = {};
-                    Player.name = $(element).find(".mod-player a div:nth-child(1)").text().trim();
-                    Player.team = $(element).find(".mod-player a div:nth-child(2)").text().trim();
-                    Player.player_id = $(element).find(".mod-player a").attr("href").split('/')[2];
-                    Player.statsadvanced = {};
-                    Player.stats = {};
+                    // Skip if the game_id or mapNumber is 'all'
+                    if (game_id === "all" || mapNumber === "all") return;
 
-                    const playerStats = $(element).find(".mod-stat");
-                    playerStats.each((i, element) => {
-                        const ct = $(element).find(".mod-ct").text().trim();
-                        const t = $(element).find(".mod-t").text().trim();
-                        const ot = $(element).find(".mod-ot").text().trim();
-                        const both = $(element).find(".mod-both").text().trim();
-                        const data = {
-                            ct: ct,
-                            t: t,
-                            ot: ot
-                        };
+                    // Find the map name using the game_id to select the right .vm-stats-game element
+                    let mapNameSelector = `.vm-stats-container .vm-stats-game[data-game-id='${game_id}'] .map`;
+                    let mapName = $(mapNameSelector).text().trim().split("\t")[0].trim();
+
+                    // If the map name is empty, skip this game
+                    if (!mapName) return;
+
+                    // Initialize the game object
+                    const game = {
+                        game_id: game_id,
+                        map_number: mapNumber,
+                        map_name: mapName,
+                        players: []
+                    };
+
+                    // Iterate over each player row in the table for this game
+                    $(`.vm-stats-container .vm-stats-game[data-game-id='${game_id}'] .wf-table-inset.mod-overview tr`).each((index, element) => {
+                        if ($(element).find(".mod-player a div:nth-child(1)").text().trim() === "") return;
+
+                        const Player = {};
+                        Player.name = $(element).find(".mod-player a div:nth-child(1)").text().trim();
+                        Player.team = $(element).find(".mod-player a div:nth-child(2)").text().trim();
+                        const playerLink = $(element).find(".mod-player a").attr("href");
+                        Player.player_id = playerLink ? playerLink.split('/')[2] : null;
+                        Player.statsadvanced = {};
+                        Player.stats = {};
+
+                        const playerStats = $(element).find(".mod-stat");
+                        playerStats.each((i, element) => {
+                            const ct = $(element).find(".mod-ct").text().trim();
+                            const t = $(element).find(".mod-t").text().trim();
+                            const ot = $(element).find(".mod-ot").text().trim();
+                            const both = $(element).find(".mod-both").text().trim();
+                            const data = {
+                                ct: ct,
+                                t: t,
+                                ot: ot
+                            };
+                            
                         switch (i) {
                             case 0:
                                 Player.statsadvanced.kdr = data;
