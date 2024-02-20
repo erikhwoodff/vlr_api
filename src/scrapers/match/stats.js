@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-const fetchGamesMatch = async (matchId) => {
+const fetchStatsMatch = async (matchId) => {
     return new Promise((resolve, reject) => {
         axios.get(`https://www.vlr.gg/${matchId}`)
             .then((response) => {
@@ -92,6 +92,6 @@ const fetchGamesMatch = async (matchId) => {
     });
 }
 
-module.exports = { fetchGamesMatch };
+module.exports = { fetchStatsMatch };
 
 
