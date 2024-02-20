@@ -65,6 +65,10 @@ const fetchStatsMatch = async (matchId) => {
                         
                         const playerLink = $(playerElement).find(".mod-player a").attr("href");
                         Player.player_id = playerLink ? playerLink.split('/')[2] : null;
+
+                        const playerAgentImage = $(playerElement).find(".mod-agents img").attr("title");
+                        Player.agent = playerAgentImage ? playerAgentImage.trim() : null;
+                        
                         Player.stats = {};
                     
                         // Extract each stat for the player
