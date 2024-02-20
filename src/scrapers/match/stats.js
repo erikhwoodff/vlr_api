@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-const fetchStatsMatch = async (matchId) => {
+const fetchGamesMatch = async (matchId) => {
     return new Promise((resolve, reject) => {
         axios.get(`https://www.vlr.gg/${matchId}`)
             .then((response) => {
@@ -25,13 +25,12 @@ const fetchStatsMatch = async (matchId) => {
                 const eventDateElement = $(".moment-tz-convert").first();
                 Match.event_utc_ts = eventDateElement.length ? eventDateElement.data("utc-ts") : null;
 
-                // Initialize the games array
+                // Logic to extract games data
                 Match.games = [];
 
-                // Iterate over each game
-                $(".vm-stats-gamesnav-item.js-map-switch[data-game-id]").each((i, element) => {
-                    const game_id = $(element).attr("data-game-id");
-                    const href = $(element).data("href");
+                $(".vm-stats-gamesnav-item.js-map-switch[data-game-id]").each((gameIndex, gameElement) => {
+                    const game_id = $(gameElement).attr("data-game-id");
+                    const href = $(gameElement).data("href");
                     const mapNumber = href ? href.split('=')[1] : null;
 
                     // Skip if the game_id or mapNumber is 'all'
@@ -53,85 +52,35 @@ const fetchStatsMatch = async (matchId) => {
                     };
 
                     // Iterate over each player row in the table for this game
-                    $(`.vm-stats-container .vm-stats-game[data-game-id='${game_id}'] .wf-table-inset.mod-overview tr`).each((index, element) => {
-                        if ($(element).find(".mod-player a div:nth-child(1)").text().trim() === "") return;
+                    $(`.vm-stats-container .vm-stats-game[data-game-id='${game_id}'] .wf-table-inset.mod-overview tr`).each((playerIndex, playerElement) => {
+                        if ($(playerElement).find(".mod-player a div:nth-child(1)").text().trim() === "") return;
 
                         const Player = {};
-                        Player.name = $(element).find(".mod-player a div:nth-child(1)").text().trim();
-                        Player.team = $(element).find(".mod-player a div:nth-child(2)").text().trim();
-                        const playerLink = $(element).find(".mod-player a").attr("href");
+                        Player.name = $(playerElement).find(".mod-player a div:nth-child(1)").text().trim();
+                        Player.team = $(playerElement).find(".mod-player a div:nth-child(2)").text().trim();
+                        const playerLink = $(playerElement).find(".mod-player a").attr("href");
                         Player.player_id = playerLink ? playerLink.split('/')[2] : null;
-                        Player.statsadvanced = {};
                         Player.stats = {};
 
-                        const playerStats = $(element).find(".mod-stat");
-                        playerStats.each((i, element) => {
-                            const ct = $(element).find(".mod-ct").text().trim();
-                            const t = $(element).find(".mod-t").text().trim();
-                            const ot = $(element).find(".mod-ot").text().trim();
-                            const both = $(element).find(".mod-both").text().trim();
-                            const data = {
+                        const playerStats = $(playerElement).find(".mod-stat");
+                        playerStats.each((statIndex, statElement) => {
+                            const statName = $(statElement).find(".mod-label").text().trim();
+                            const ct = $(statElement).find(".mod-ct").text().trim();
+                            const t = $(statElement).find(".mod-t").text().trim();
+                            const ot = $(statElement).find(".mod-ot").text().trim();
+                            const both = $(statElement).find(".mod-both").text().trim();
+                            Player.stats[statName] = {
                                 ct: ct,
                                 t: t,
-                                ot: ot
+                                ot: ot,
+                                both: both
                             };
-                            switch (i) {
-                                case 0:
-                                    Player.statsadvanced.kdr = data;
-                                    Player.stats.kdr = both;
-                                    break;
-                                case 1:
-                                    Player.statsadvanced.acs = data;
-                                    Player.stats.acs = both;
-                                    break;
-                                case 2:
-                                    Player.statsadvanced.k = data;
-                                    Player.stats.k = both;
-                                    break;
-                                case 3:
-                                    Player.statsadvanced.d = data;
-                                    Player.stats.d = both;
-                                    break;
-                                case 4:
-                                    Player.statsadvanced.a = data;
-                                    Player.stats.a = both;
-                                    break;
-                                case 5:
-                                    Player.statsadvanced.kdb = data;
-                                    Player.stats.kdb = both;
-                                    break;
-                                case 6:
-                                    Player.statsadvanced.kast = data;
-                                    Player.stats.kast = both;
-                                    break;
-                                case 7:
-                                    Player.statsadvanced.adr = data;
-                                    Player.stats.adr = both;
-                                    break;
-                                case 8:
-                                    Player.statsadvanced.hs = data;
-                                    Player.stats.hs = both;
-                                    break;
-                                case 9:
-                                    Player.statsadvanced.fk = data;
-                                    Player.stats.fk = both;
-                                    break;
-                                case 10:
-                                    Player.statsadvanced.fd = data;
-                                    Player.stats.fd = both;
-                                    break;
-                                case 11:
-                                    Player.statsadvanced.fkdb = data;
-                                    Player.stats.fkdb = both;
-                                    break;
-                                default:
-                                    break;
-                            }
                         });
 
                         game.players.push(Player);
                     });
 
+                    // Add the game object to the Match.games array
                     Match.games.push(game);
                 });
 
@@ -143,5 +92,6 @@ const fetchStatsMatch = async (matchId) => {
     });
 }
 
-module.exports = { fetchStatsMatch };
+module.exports = { fetchGamesMatch };
+
 
