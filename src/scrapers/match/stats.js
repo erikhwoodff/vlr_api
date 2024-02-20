@@ -53,18 +53,28 @@ const fetchStatsMatch = async (matchId) => {
 
                     // Iterate over each player row in the table for this game
                     $(`.vm-stats-container .vm-stats-game[data-game-id='${game_id}'] .wf-table-inset.mod-overview tr`).each((playerIndex, playerElement) => {
-                        if ($(playerElement).find(".mod-player a div:nth-child(1)").text().trim() === "") return;
-
+                        if ($(playerElement).find(".mod-player").text().trim() === "") return;
+                    
                         const Player = {};
                         Player.name = $(playerElement).find(".mod-player").text().trim(); // Assuming the player's name is within .mod-player
-                        Player.team = $(playerElement).find(".mod-player a div:nth-child(2)").text().trim();
+                                            Player.team = $(playerElement).find(".mod-player a div:nth-child(2)").text().trim();
                         const playerLink = $(playerElement).find(".mod-player a").attr("href");
                         Player.player_id = playerLink ? playerLink.split('/')[2] : null;
                         Player.stats = {};
-
+                    
                         // Extract each stat for the player
-                        $(playerElement).find("td[class^='mod-stat']").each((statIndex, statElement) => {
-                            const statName = $(statElement).attr('class').split(' ').find(cls => cls.startsWith('mod-vlr')).split('-')[2]; // This line is extracting the stat name, assuming it's always the third part of the class name
+                        $(playerElement).find("td[class*='mod-stat']").each((statIndex, statElement) => {
+                            // Safely get the class name containing the stat
+                            const classList = $(statElement).attr('class').split(' ');
+                            const statClass = classList.find(cls => cls.includes('mod-vlr'));
+                            // If a statClass isn't found, or doesn't contain a '-', skip this element
+                            if (!statClass || !statClass.includes('-')) return;
+                    
+                            const statNameParts = statClass.split('-');
+                            // Check if statNameParts has the expected length
+                            if (statNameParts.length < 3) return;
+                    
+                            const statName = statNameParts[2]; // This is the stat name
                             const statValue = $(statElement).find('.stats-sq').text().trim();
                     
                             Player.stats[statName] = statValue;
