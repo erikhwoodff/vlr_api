@@ -56,27 +56,20 @@ const fetchStatsMatch = async (matchId) => {
                         if ($(playerElement).find(".mod-player a div:nth-child(1)").text().trim() === "") return;
 
                         const Player = {};
-                        Player.name = $(playerElement).find(".mod-player a div:nth-child(1)").text().trim();
+                        Player.name = $(playerElement).find(".mod-player").text().trim(); // Assuming the player's name is within .mod-player
                         Player.team = $(playerElement).find(".mod-player a div:nth-child(2)").text().trim();
                         const playerLink = $(playerElement).find(".mod-player a").attr("href");
                         Player.player_id = playerLink ? playerLink.split('/')[2] : null;
                         Player.stats = {};
 
-                        const playerStats = $(playerElement).find(".mod-stat");
-                        playerStats.each((statIndex, statElement) => {
-                            const statName = $(statElement).find(".mod-label").text().trim();
-                            const ct = $(statElement).find(".mod-ct").text().trim();
-                            const t = $(statElement).find(".mod-t").text().trim();
-                            const ot = $(statElement).find(".mod-ot").text().trim();
-                            const both = $(statElement).find(".mod-both").text().trim();
-                            Player.stats[statName] = {
-                                ct: ct,
-                                t: t,
-                                ot: ot,
-                                both: both
-                            };
+                        // Extract each stat for the player
+                        $(playerElement).find("td[class^='mod-stat']").each((statIndex, statElement) => {
+                            const statName = $(statElement).attr('class').split(' ').find(cls => cls.startsWith('mod-vlr')).split('-')[2]; // This line is extracting the stat name, assuming it's always the third part of the class name
+                            const statValue = $(statElement).find('.stats-sq').text().trim();
+                    
+                            Player.stats[statName] = statValue;
                         });
-
+                    
                         game.players.push(Player);
                     });
 
