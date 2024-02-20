@@ -179,9 +179,9 @@ app.get("/api", (req, res) => {
                 returns: "Array of Games Objects"
             },
             {
-                name: "Games",
+                name: "Stats",
                 description: "Returns a list of all events",
-                url: "/api/game_stats/:id",
+                url: "/api/stats/:id",
                 method: "GET",
                 params: [
                     {
@@ -343,9 +343,9 @@ app.get("/api/games/:id", async (req, res) => {
         res.json({ status: "Failed", error: err });
     });
 });
-// Game_Stats (still enter the match id)
-app.get("/api/game_stats/:id", async (req, res) => {
-    fetchGamesMatch(req.params.id).then((data) => {
+// Stats (still enter the match id)
+app.get("/api/stats/:id", async (req, res) => {
+    fetchStatsMatch(req.params.id).then((data) => {
         res.json({ status: "Success", data: data });
     }).catch((err) => {
         res.json({ status: "Failed", error: err });
