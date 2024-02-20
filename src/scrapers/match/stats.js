@@ -78,7 +78,15 @@ const fetchStatsMatch = async (matchId) => {
                             // Find the specific class that contains the stat identifier.
                             const statClass = classList.find(cls => cls.includes('mod-vlr'));
                             // Skip this stat element if it doesn't contain the stat identifier.
+                            
                             if (!statClass || !statClass.includes('-')) return;
+
+                            const adrElement = $(statElement).find('.stats-sq.mod-combat');
+                            if (adrElement.length) {
+                                const adrValue = cleanString(adrElement.text());
+                                Player.stats.adr = adrValue; // Assign ADR to player stats
+                            }
+
                             
                             // Extract the stat name, which should be the part after 'mod-vlr-'.
                             const statName = statClass.split('-').pop(); // This should give 'kills', 'deaths', or 'assists'.
