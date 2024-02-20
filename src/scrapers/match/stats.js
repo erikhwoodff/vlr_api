@@ -2,16 +2,15 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 function cleanString(str) {
-    return str.replace(/[\n\t]/g, '').trim().replace(/\s\s+/g, ' ');
+    return str.replace(/[\n\t\r]+/g, ' ').replace(/\s\s+/g, ' ').trim();
 }
 
 const fetchStatsMatch = async (matchId) => {
-    return new Promise((resolve, reject) => {
-        axios.get(`https://www.vlr.gg/${matchId}`)
-            .then((response) => {
-                let $ = cheerio.load(response.data);
-                const Match = {};
-                Match.match_id = matchId;
+    try {
+        const response = await axios.get(`https://www.vlr.gg/${matchId}`);
+        let $ = cheerio.load(response.data);
+        const Match = {};
+        Match.match_id = matchId;
 
                 // Extract the main Event name and clean up whitespace and newline characters
                 let rawMainEvent = $(".match-header-super div[style*='font-weight: 700;']").first().text();
@@ -31,7 +30,7 @@ const fetchStatsMatch = async (matchId) => {
 
                 // Logic to extract games data
                 Match.games = [];
-
+        
                 $(".vm-stats-gamesnav-item.js-map-switch[data-game-id]").each((gameIndex, gameElement) => {
                     const game_id = $(gameElement).attr("data-game-id");
                     const href = $(gameElement).data("href");
@@ -57,53 +56,33 @@ const fetchStatsMatch = async (matchId) => {
 
                     // Iterate over each player row in the table for this game
                     $(`.vm-stats-container .vm-stats-game[data-game-id='${game_id}'] .wf-table-inset.mod-overview tr`).each((playerIndex, playerElement) => {
-                        if ($(playerElement).find(".mod-player").text().trim() === "") return;
-                    
-                        const Player = {};
+                        const player = {};
                         const playerNameWithExtra = $(playerElement).find(".mod-player").text();
-                        const playerName = cleanString(playerNameWithExtra); // Cleaned player name
+                        player.name = cleanString(playerNameWithExtra);
                         
                         const playerLink = $(playerElement).find(".mod-player a").attr("href");
                         Player.player_id = playerLink ? playerLink.split('/')[2] : null;
                         Player.stats = {};
                     
                         // Extract each stat for the player
-                        $(playerElement).find("td[class*='mod-stat']").each((statIndex, statElement) => {
-                            // Safely get the class name containing the stat
-                            const classList = $(statElement).attr('class').split(' ');
-                            const statClass = classList.find(cls => cls.includes('mod-vlr'));
-                            // If a statClass isn't found, or doesn't contain a '-', skip this element
-                            if (!statClass || !statClass.includes('-')) return;
-                        
-                            const statNameParts = statClass.split('-');
-                            // Check if statNameParts has the expected length
-                            if (statNameParts.length < 3) return;
-                        
-                            const statName = statNameParts[2]; // This is the stat name
-                            let statValue = $(statElement).find('.stats-sq').text();
-                        
-                            // Clean up the statValue by removing newlines, tabs, and multiple spaces
-                            statValue = statValue.replace(/[\n\t]+/g, '').trim(); // Remove newlines and tabs
-                            statValue = statValue.replace(/\s\s+/g, ' '); // Replace multiple spaces with a single space
-                        
-                            Player.stats[statName] = statValue;
-                        });
-                    
-                        game.players.push(Player);
-                    });
+                        player.stats = {};
 
-                    // Add the game object to the Match.games array
-                    Match.games.push(game);
+                $(playerElement).find("td[class*='mod-stat']").each((statIndex, statElement) => {
+                    const statName = $(statElement).attr('class').split(' ').find(cls => cls.includes('mod-vlr')).split('-').pop();
+                    let statValueWithExtra = $(statElement).find('.stats-sq').text();
+                    player.stats[statName] = cleanString(statValueWithExtra);
                 });
 
-                resolve(Match);
-            })
-            .catch((err) => {
-                reject(err);
+                game.players.push(player);
             });
-    });
+
+            Match.games.push(game);
+        });
+
+        return Match; // Resolve the promise with the match data
+    } catch (err) {
+        throw err; // Reject the promise with an error
+    }
 }
 
 module.exports = { fetchStatsMatch };
-
-
