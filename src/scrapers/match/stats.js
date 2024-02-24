@@ -69,36 +69,36 @@ const fetchStatsMatch = async (matchId) => {
                         const playerAgentImage = $(playerElement).find(".mod-agents img").attr("title");
                         Player.agent = playerAgentImage ? playerAgentImage.trim() : null;
                         
-                        Player.stats = {};
-                    
+                       Player.stats = {};
+
                         // Extract each stat for the player
                         $(playerElement).find("td[class*='mod-stat']").each((statIndex, statElement) => {
-                            // The class list contains all classes for the statElement.
-                            const classList = $(statElement).attr('class').split(' ');
-                            // Find the specific class that contains the stat identifier.
-                            const statClass = classList.find(cls => cls.includes('mod-vlr'));
-                            // Skip this stat element if it doesn't contain the stat identifier.
-                            if (!statClass || !statClass.includes('-')) return;
-                        
-                            // Extract the stat name, which should be the part after 'mod-vlr-'.
-                            const statName = statClass.split('-').pop(); // This should give 'kills', 'deaths', 'assists', 'combat' for ADR, etc.
-                            
-                            // Check if it's a combined stat we want (represented by 'mod-both').
-                            const combinedStatElement = $(statElement).find('.side.mod-both').first();
-                            if (combinedStatElement.length) {
-                                let statValue = combinedStatElement.text();
-                                // Clean up the statValue by removing newlines, tabs, and multiple spaces.
-                                statValue = cleanString(statValue);
-                                
-                                // Assign to Player.stats using the cleaned stat name.
+                            // The order of stats in the `td` cells should match the header order
+                            // Replace the 'statElement' with the corresponding class or structure for each stat
+                            const stats = [
+                                'rating', // R
+                                'acs',    // ACS
+                                'kills',  // K
+                                'deaths', // D
+                                'assists', // A
+                                'kd_diff', // +/- 
+                                'kast',    // KAST
+                                'adr',     // ADR
+                                'hs',      // HS%
+                                'fk',      // FK
+                                'fd',      // FD
+                                'fk_diff'  // +/- (FK - FD)
+                            ];
+                            if (statIndex < stats.length) {
+                                const statName = stats[statIndex];
+                                const statValue = cleanString($(statElement).text());
                                 Player.stats[statName] = statValue;
                             }
                         });
-                        
+
                         game.players.push(Player);
                     });
 
-                    // Add the game object to the Match.games array
                     Match.games.push(game);
                 });
 
