@@ -72,29 +72,34 @@ const fetchStatsMatch = async (matchId) => {
                        Player.stats = {};
 
                         // Extract each stat for the player
-                        $(playerElement).find("td[class*='mod-stat']").each((statIndex, statElement) => {
-                            // The order of stats in the `td` cells should match the header order
-                            // Replace the 'statElement' with the corresponding class or structure for each stat
+                        // Inside the player row iteration
+                        $(playerElement).find("td").each((index, statElement) => {
+                            // Assuming that the index of each <td> corresponds to the order of your stats array
                             const stats = [
+                                null, // Placeholder for player name column
+                                null, // Placeholder for agent image column
                                 'rating', // R
-                                'acs',    // ACS
-                                'kills',  // K
+                                'acs', // ACS
+                                'kills', // K
                                 'deaths', // D
                                 'assists', // A
                                 'kd_diff', // +/- 
-                                'kast',    // KAST
-                                'adr',     // ADR
-                                'hs',      // HS%
-                                'fk',      // FK
-                                'fd',      // FD
-                                'fk_diff'  // +/- (FK - FD)
+                                'kast', // KAST
+                                'adr', // ADR
+                                'hs', // HS%
+                                'fk', // FK
+                                'fd', // FD
+                                'fk_diff' // +/- (FK - FD)
                             ];
-                            if (statIndex < stats.length) {
-                                const statName = stats[statIndex];
-                                const statValue = cleanString($(statElement).text());
+                            // Only start processing from the 3rd <td>, which should contain the 'rating'
+                            if (index >= 2 && index < stats.length) {
+                                const statName = stats[index];
+                                // Use .mod-both to get the combined stat or adjust if you need individual side stats
+                                const statValue = cleanString($(statElement).find('.side.mod-both').text());
                                 Player.stats[statName] = statValue;
                             }
                         });
+
 
                         game.players.push(Player);
                     });
