@@ -50,6 +50,7 @@ const fetchGamesMatch = async (matchId) => {
                     let mod_cts = teamData.find(".mod-ct").map((idx, el) => $(el).text().trim()).get();
                     let mod_ts = teamData.find(".mod-t").map((idx, el) => $(el).text().trim()).get();
                     let mod_ots = teamData.find(".mod-ot").map((idx, el) => $(el).text().trim()).get();
+                    let teamElos = teamData.find(".match-header-link-name-elo").map((idx, el) => $(el).text().trim().replace(/[\[\]]/g, '')).get(); // Removing the brackets
 
                     // Construct the game data object
                     let gameData = {
@@ -61,13 +62,15 @@ const fetchGamesMatch = async (matchId) => {
                                 name: teamNames[0],
                                 mod_ct: mod_cts[0],
                                 mod_t: mod_ts[0],
-                                mod_ot: mod_ots[0] || "0"
+                                mod_ot: mod_ots[0] || "0",
+                                elo: teamElos[0] 
                             },
                             {
                                 name: teamNames[1],
                                 mod_ct: mod_cts[1],
                                 mod_t: mod_ts[1],
-                                mod_ot: mod_ots[1] || "0"
+                                mod_ot: mod_ots[1] || "0",
+                                elo: teamElos[1] 
                             }
                         ]
                     };
