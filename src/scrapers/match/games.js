@@ -44,15 +44,16 @@ const fetchGamesMatch = async (matchId) => {
                     // If the map name is empty, skip this game
                     if (!mapName) return;
 
-                    // New extraction logic for team names and ELOs
-                    let matchHeaderData = $(".match-header-vs .match-header-link");
-                    let teamNames = matchHeaderData.find(".wf-title-med").map((idx, el) => $(el).text().trim()).get();
-                    let teamElos = matchHeaderData.find(".match-header-link-name-elo").map((idx, el) => $(el).text().trim().replace(/\[|\]/g, '')).get();
-                
-                    // Ensure that team names and ELOs are extracted in the correct order as they appear in the matchHeaderData
-                    let team1Data = $(matchHeaderData[0]);
-                    let team2Data = $(matchHeaderData[1]);
-                
+                   // Extracting team names, scores, and ELO ratings
+                    let teamData = $(`.vm-stats-container .vm-stats-game[data-game-id='${game_id}']`);
+                    let teamNames = teamData.find(".team-name").map((idx, el) => $(el).text().trim()).get();
+                    let mod_cts = teamData.find(".mod-ct").map((idx, el) => $(el).text().trim()).get();
+                    let mod_ts = teamData.find(".mod-t").map((idx, el) => $(el).text().trim()).get();
+                    let mod_ots = teamData.find(".mod-ot").map((idx, el) => $(el).text().trim()).get();
+                    
+                    let headerData = $(".match-header-vs .match-header-link");
+                    let headerElos = headerData.find(".match-header-link-name-elo").map((idx, el) => $(el).text().trim().replace(/\[|\]/g, '')).get();
+                    
                     // Construct the game data object with extracted ELOs
                     let gameData = {
                         game_id: game_id,
@@ -64,14 +65,14 @@ const fetchGamesMatch = async (matchId) => {
                                 mod_ct: mod_cts[0],
                                 mod_t: mod_ts[0],
                                 mod_ot: mod_ots[0] || "0",
-                                elo: teamElos[0] // ELO for the first team
+                                elo: headerElos[0] // ELO for the first team
                             },
                             {
                                 name: teamNames[1],
                                 mod_ct: mod_cts[1],
                                 mod_t: mod_ts[1],
                                 mod_ot: mod_ots[1] || "0",
-                                elo: teamElos[1] // ELO for the second team
+                                elo: headerElos[1] // ELO for the second team
                             }
                         ]
                     };
