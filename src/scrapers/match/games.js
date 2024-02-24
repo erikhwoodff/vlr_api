@@ -26,6 +26,10 @@ const fetchGamesMatch = async (matchId) => {
                 const eventDateElement = $(".moment-tz-convert").first();
                 Match.event_utc_ts = eventDateElement.length ? eventDateElement.data("utc-ts") : null;
 
+                // Extract the Ban Data
+                const matchHeaderNote = $(".match-header-note").text().trim();
+                Match.match_header_note = matchHeaderNote;
+
                 // Logic to extract games data
                 Match.games = [];
 
