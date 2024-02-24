@@ -44,14 +44,14 @@ const fetchGamesMatch = async (matchId) => {
                     // If the map name is empty, skip this game
                     if (!mapName) return;
 
-                    // Extracting team names and scores
+                   // Extracting team names, scores, and ELO ratings
                     let teamData = $(`.vm-stats-container .vm-stats-game[data-game-id='${game_id}']`);
                     let teamNames = teamData.find(".team-name").map((idx, el) => $(el).text().trim()).get();
                     let mod_cts = teamData.find(".mod-ct").map((idx, el) => $(el).text().trim()).get();
                     let mod_ts = teamData.find(".mod-t").map((idx, el) => $(el).text().trim()).get();
                     let mod_ots = teamData.find(".mod-ot").map((idx, el) => $(el).text().trim()).get();
                     let teamElos = teamData.find(".match-header-link-name-elo").map((idx, el) => $(el).text().trim().replace(/[\[\]]/g, '')).get(); // Removing the brackets
-
+                    
                     // Construct the game data object
                     let gameData = {
                         game_id: game_id,
@@ -63,14 +63,14 @@ const fetchGamesMatch = async (matchId) => {
                                 mod_ct: mod_cts[0],
                                 mod_t: mod_ts[0],
                                 mod_ot: mod_ots[0] || "0",
-                                elo: teamElos[0] 
+                                elo: teamElos[0] // Added ELO here
                             },
                             {
                                 name: teamNames[1],
                                 mod_ct: mod_cts[1],
                                 mod_t: mod_ts[1],
                                 mod_ot: mod_ots[1] || "0",
-                                elo: teamElos[1] 
+                                elo: teamElos[1] // And here
                             }
                         ]
                     };
