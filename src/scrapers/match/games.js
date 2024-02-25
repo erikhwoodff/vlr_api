@@ -48,7 +48,7 @@ const fetchGamesMatch = async (matchId) => {
                     // If the map name is empty, skip this game
                     if (!mapName) return;
 
-                   // Extracting team names, scores, and ELO ratings
+                    // Extracting team names, scores, and ELO ratings
                     let teamData = $(`.vm-stats-container .vm-stats-game[data-game-id='${game_id}']`);
                     let teamNames = teamData.find(".team-name").map((idx, el) => $(el).text().trim()).get();
                     let mod_cts = teamData.find(".mod-ct").map((idx, el) => $(el).text().trim()).get();
@@ -58,21 +58,31 @@ const fetchGamesMatch = async (matchId) => {
                     let headerData = $(".match-header-vs .match-header-link");
                     let headerElos = headerData.find(".match-header-link-name-elo").map((idx, el) => $(el).text().trim().replace(/\[|\]/g, '')).get();
                     
+                    // Extract team names and team IDs from the header
+                    let teamInfo = headerData.map((idx, el) => {
+                        let teamName = $(el).find(".wf-title-med.mod-single").text().trim();
+                        let href = $(el).attr("href");
+                        let teamId = href.split('/')[2];
+                        return { teamName, teamId };
+                    }).get();
+                    
                     // Construct the game data object with extracted ELOs
-                    let gameData = {
+                     let gameData = {
                         game_id: game_id,
                         map_number: mapNumber,
                         map_name: mapName,
                         teams: [
                             {
-                                name: teamNames[0],
+                                name: teamInfo[0].teamName,
+                                team_id: teamInfo[0].teamId,
                                 mod_ct: mod_cts[0],
                                 mod_t: mod_ts[0],
                                 mod_ot: mod_ots[0] || "0",
                                 elo: headerElos[0] // ELO for the first team
                             },
                             {
-                                name: teamNames[1],
+                                name: teamInfo[1].teamName,
+                                team_id: teamInfo[1].teamId,
                                 mod_ct: mod_cts[1],
                                 mod_t: mod_ts[1],
                                 mod_ot: mod_ots[1] || "0",
@@ -80,6 +90,7 @@ const fetchGamesMatch = async (matchId) => {
                             }
                         ]
                     };
+
 
                     // Add the game data to the Match.games array
                     Match.games.push(gameData);
