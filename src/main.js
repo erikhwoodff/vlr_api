@@ -20,7 +20,7 @@ const { fetchGamesMatch } = require('./scrapers/match/games');
 const { fetchStatsMatch } = require('./scrapers/match/stats');
 const { fetchAllMatches } = require('./scrapers/match/all');
 const { fetchOneMatch } = require('./scrapers/match/one');
-const { fetchScheduleId } = require('./scrapers/match/schedule');
+const { fetchScheduleIds } = require('./scrapers/match/schedule');
 const { fetchMatchIds } = require('./scrapers/match/history'); // Added this. Doesn't currently work. See match history below...
 const { fetchOnePlayer } = require('./scrapers/player/one');
 const { fetchOneTeam } = require('./scrapers/team/one');
@@ -482,7 +482,7 @@ app.get("/api/schedule", async (req, res) => {
     try {
         console.log("Fetching match IDs for schedule:", req.params.teamId); // Log the team ID
         const teamId = req.params.teamId;
-        const matchIds = await fetchMatchIds(teamId);
+        const matchIds = await fetchScheduleIds(teamId);
         console.log("Match IDs fetched:", matchIds); // Log the fetched match IDs
         res.json({ status: "Success", data: matchIds });
     } catch (error) {
