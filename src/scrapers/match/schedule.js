@@ -24,25 +24,31 @@ const fetchMatchDetails = async (matchId) => {
     const response = await axios.get(matchUrl);
     const $ = cheerio.load(response.data);
 
+    // Extracting datetime
     const datetime = $(".moment-tz-convert[data-utc-ts]").first().attr("data-utc-ts");
-    const teams = $(".match-header-link-name .wf-title-med").map((i, elem) => $(elem).text().trim()).get();
 
-    // Assuming there's only one game per match page for simplicity
-    const game_id = 1; // If there are multiple, you'll need to adjust this
-    const players = $(`.vm-stats-container .vm-stats-game[data-game-id='${game_id}'] .wf-table-inset.mod-overview tr`).map((playerIndex, playerElement) => {
-        const playerNameWithExtra = $(playerElement).find(".mod-player").text().trim();
-        // Assuming cleanString is a function you've defined to clean the player name
-        const playerName = playerNameWithExtra; // Use your cleanString function instead if needed
-        return playerName;
+    // Extracting team names
+    const teams = $(".match-header-link-name .wf-title-med").map((i, elem) => {
+        return { name: $(elem).text().trim(), players: [] };
     }).get();
+
+    // Extracting player names for each team
+    $(`.vm-stats-game[data-game-id='all'] .wf-table-inset.mod-overview`).each((index, element) => {
+        if (index < 2) { // Assuming there are only two teams per match
+            const playerNames = $(element).find('.mod-player').map((i, playerElem) => {
+                return $(playerElem).text().trim();
+            }).get().slice(0, 5); // Take only the first 5 players for each team
+            teams[index].players = playerNames;
+        }
+    });
 
     return {
         matchId,
         datetime,
-        teams,
-        players
+        teams
     };
 };
+
 
 const fetchSchedule = async () => {
     try {
