@@ -478,18 +478,17 @@ app.get("/api/rankings/:region", async (req, res) => {
     res.json({ status: "Success", data: "WIP" });
 });
 // Schedule
-app.get("/api/schedule", async (req, res) => {
-    try {
-        console.log("Fetching match IDs for schedule:", req.params.teamId); // Log the team ID
-        const teamId = req.params.teamId;
-        const matchIds = await fetchScheduleIds(teamId);
-        console.log("Match IDs fetched:", matchIds); // Log the fetched match IDs
-        res.json({ status: "Success", data: matchIds });
-    } catch (error) {
-        console.error("Error fetching match IDs:", error); // Log any errors
-        res.status(500).json({ status: "Failed", error: error.message });
+app.get("/api/schedule/:id?", async (req, res) => {
+    const id = req.params.id;
+    if(!id) {
+        res.json({ status: "Failed", error: "No Event ID provided" });
+        return;
     }
-});
+    fetchScheduleIds(req.params.id).then((data) => {
+        res.json({ status: "Success", data: data });
+    }).catch((err) => {
+        res.json({ status: "Failed", error: err });
+    });
 // Teams
 app.get("/api/team/:id", async (req, res) => {
     fetchOneTeam(req.params.id).then((data) => {
