@@ -21,7 +21,7 @@ const { fetchStatsMatch } = require('./scrapers/match/stats');
 const { fetchAllMatches } = require('./scrapers/match/all');
 const { fetchOneMatch } = require('./scrapers/match/one');
 const { fetchScheduleIds } = require('./scrapers/match/schedule');
-const { fetchMatchIds } = require('./scrapers/match/history'); // Added this. Doesn't currently work. See match history below...
+const { fetchMatchIds } = require('./scrapers/match/history');
 const { fetchOnePlayer } = require('./scrapers/player/one');
 const { fetchOneTeam } = require('./scrapers/team/one');
 const { fetchTwoTeam } = require('./scrapers/team/two');
@@ -444,7 +444,7 @@ app.get("/api/players", async (req, res) => {
         example: {
             ids: ["1", "2", "3"]
         }
-    } });
+    }});
 });
 app.post("/api/players", async (req, res) => {
     // Get Posted IDs from ID param
@@ -465,7 +465,7 @@ app.post("/api/players", async (req, res) => {
             console.error(err);
             res.json({ status: "Failed", error: err });
         }))
-    });
+});
     Promise.all(promises).then(() => {
         res.json({ status: "Success", data: retValue });
     }).catch((err) => {
@@ -476,7 +476,7 @@ app.post("/api/players", async (req, res) => {
 // Rankings
 app.get("/api/rankings/:region", async (req, res) => {
     res.json({ status: "Success", data: "WIP" });
-});
+    });
 // Schedule
 app.get("/api/schedule/:id?", async (req, res) => {
     const id = req.params.id;
@@ -489,6 +489,7 @@ app.get("/api/schedule/:id?", async (req, res) => {
     }).catch((err) => {
         res.json({ status: "Failed", error: err });
     });
+});
 // Teams
 app.get("/api/team/:id", async (req, res) => {
     fetchOneTeam(req.params.id).then((data) => {
