@@ -54,13 +54,6 @@ const fetchMatchDetails = async (matchId) => {
     }
 };
 
-    return {
-        matchId,
-        datetime,
-        teams
-    };
-};
-
 
 const fetchSchedule = async () => {
     try {
