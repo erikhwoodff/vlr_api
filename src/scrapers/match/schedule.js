@@ -1,7 +1,7 @@
 const axios = require('axios');
 const cheerio = require('cheerio');
 
-const fetchMatchIds = async () => {
+const fetchScheduleIds = async () => {
     try {
         // Fetch the page
         const response = await axios.get(`https://www.vlr.gg/matches`);
@@ -32,7 +32,7 @@ const fetchMatchIds = async () => {
 };
 
 // Usage
-fetchMatchIds().then(matchIds => {
+fetchScheduleIds().then(matchIds => {
     console.log(matchIds);
 }).catch(err => {
     console.error(err);
