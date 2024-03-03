@@ -44,7 +44,7 @@ const fetchMatchDetails = async (matchId) => {
     };
 };
 
-const scrapeVlr = async () => {
+const fetchScheduleDetails = async () => {
     try {
         const matchIds = await fetchScheduleIds();
         for (const matchId of matchIds) {
@@ -56,4 +56,4 @@ const scrapeVlr = async () => {
     }
 };
 
-scrapeVlr();
+module.exports = { fetchScheduleDetails };
