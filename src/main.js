@@ -352,14 +352,6 @@ app.get("/api/games/:id", async (req, res) => {
         res.json({ status: "Failed", error: err });
     });
 });
-// Stats (still enter the match id)
-app.get("/api/stats/:id", async (req, res) => {
-    fetchStatsMatch(req.params.id).then((data) => {
-        res.json({ status: "Success", data: data });
-    }).catch((err) => {
-        res.json({ status: "Failed", error: err });
-    });
-});
 app.get("/api/events/:page?", async (req, res) => {
     // Validate input
     // if Page is not a number, default to 1
@@ -479,12 +471,20 @@ app.get("/api/rankings/:region", async (req, res) => {
     });
 // Schedule
 app.get("/api/schedule/:id?", async (req, res) => {
-    fetchSchedule.then((data) => {
+    fetchSchedule().then((data) => {
         res.json({ status: "Success", data: data });
     }).catch((err) => {
         res.json({ status: "Failed", error: err });
     });
 });    
+// Stats (still enter the match id)
+app.get("/api/stats/:id", async (req, res) => {
+    fetchStatsMatch(req.params.id).then((data) => {
+        res.json({ status: "Success", data: data });
+    }).catch((err) => {
+        res.json({ status: "Failed", error: err });
+    });
+});
 // Teams
 app.get("/api/team/:id", async (req, res) => {
     fetchOneTeam(req.params.id).then((data) => {
