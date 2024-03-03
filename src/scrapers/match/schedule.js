@@ -11,7 +11,7 @@ const fetchScheduleIds = async () => {
 
         console.log('Selecting match links from HTML...');
         // Select anchor tags within elements that have the class 'wf-card'
-        const matchLinks = $("div.wf-card a[href*='/matches/']");
+        const matchLinks = $("div.wf-card > a[href*='/matches/']");
 
         // If no match links are found, log an appropriate message
         if (matchLinks.length === 0) {
@@ -25,7 +25,7 @@ const fetchScheduleIds = async () => {
             console.log(`Processing href: ${href}`); // Log the href being processed
             // Extract the match ID from the href
             const matchIdParts = href.split('/');
-            const matchId = matchIdParts[1]; // Assuming the match ID is the second part of the URL path
+            const matchId = matchIdParts[1]; // The match ID is the second part of the URL path
             return matchId;
         }).get(); // Convert cheerio object to array
 
@@ -38,3 +38,4 @@ const fetchScheduleIds = async () => {
 };
 
 module.exports = { fetchScheduleIds };
+
