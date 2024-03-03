@@ -24,23 +24,35 @@ const fetchMatchDetails = async (matchId) => {
     const response = await axios.get(matchUrl);
     const $ = cheerio.load(response.data);
 
-    // Extracting datetime
     const datetime = $(".moment-tz-convert[data-utc-ts]").first().attr("data-utc-ts");
-
-    // Extracting team names
-    const teams = $(".match-header-link-name .wf-title-med").map((i, elem) => {
-        return { name: $(elem).text().trim(), players: [] };
-    }).get();
+    const teams = $(".match-header-link-name .wf-title-med").map((i, elem) => $(elem).text().trim()).get();
 
     // Extracting player names for each team
-    $(`.vm-stats-game[data-game-id='all'] .wf-table-inset.mod-overview`).each((index, element) => {
-        if (index < 2) { // Assuming there are only two teams per match
-            const playerNames = $(element).find('.mod-player').map((i, playerElem) => {
-                return $(playerElem).text().trim();
-            }).get().slice(0, 5); // Take only the first 5 players for each team
-            teams[index].players = playerNames;
-        }
-    });
+    const teamPlayers = $(".vm-stats-game[data-game-id='all'] .wf-table-inset.mod-overview").map((index, element) => {
+        const playerNames = $(element).find('.mod-player').map((i, playerElem) => {
+            let playerName = $(playerElem).find('.text-of').text().trim(); // This should grab the player's name cleanly
+            // Remove any additional text such as team tags if they are not part of the actual name
+            return playerName.replace(/[^\w\s]/gi, '').trim(); // Adjust regex as necessary
+        }).get().slice(0, 5); // Take only the first 5 players for each team
+        return playerNames;
+    }).get();
+
+    // Assuming there are only two teams, associate the players with the correct teams
+    if (teams.length === 2) {
+        return {
+            matchId,
+            datetime,
+            teams: [
+                { name: teams[0], players: teamPlayers[0] },
+                { name: teams[1], players: teamPlayers[1] }
+            ]
+        };
+    } else {
+        // Handle cases where there are not exactly two teams
+        console.error('Unexpected number of teams found');
+        return { matchId, datetime, teams: [] };
+    }
+};
 
     return {
         matchId,
