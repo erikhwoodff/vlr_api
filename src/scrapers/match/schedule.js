@@ -23,7 +23,7 @@ const fetchScheduleIds = async () => {
         const matchIds = matchLinks.map((i, element) => {
             const href = $(element).attr('href');
             // Split the href by '/' and get the second element (index 1), which should be the match ID
-            const matchId = href.split('/')[1];
+            const matchId = href.split('/')[0];
             console.log(`Match ID: ${matchId}`); // Log the match ID
             return matchId;
         }).get(); // Convert cheerio object to array
