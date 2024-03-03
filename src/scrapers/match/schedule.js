@@ -10,8 +10,8 @@ const fetchScheduleIds = async () => {
         const $ = cheerio.load(response.data);
 
         console.log('Selecting match links from HTML...');
-        // Select anchor tags within elements that have the class 'wf-card'
-        const matchLinks = $("div.wf-card > a[href*='/matches/']");
+        // We target any 'a' element with an href attribute containing '/matches/', inside 'div.wf-card'
+        const matchLinks = $("div.wf-card a[href*='/matches/']");
 
         // If no match links are found, log an appropriate message
         if (matchLinks.length === 0) {
@@ -22,10 +22,9 @@ const fetchScheduleIds = async () => {
         console.log(`Found ${matchLinks.length} match links, extracting IDs...`);
         const matchIds = matchLinks.map((i, element) => {
             const href = $(element).attr('href');
-            console.log(`Processing href: ${href}`); // Log the href being processed
-            // Extract the match ID from the href
-            const matchIdParts = href.split('/');
-            const matchId = matchIdParts[1]; // The match ID is the second part of the URL path
+            // Split the href by '/' and get the second element (index 1), which should be the match ID
+            const matchId = href.split('/')[1];
+            console.log(`Match ID: ${matchId}`); // Log the match ID
             return matchId;
         }).get(); // Convert cheerio object to array
 
