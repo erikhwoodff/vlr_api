@@ -40,6 +40,3 @@ const fetchScheduleIds = async () => {
 };
 
 module.exports = { fetchScheduleIds };
-
-
-
