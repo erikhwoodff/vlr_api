@@ -43,8 +43,9 @@ const fetchMatchDetails = async (matchId) => {
             matchId,
             datetime,
             teams: [
-                { name: teams[0], players: teamPlayers[0] },
-                { name: teams[1], players: teamPlayers[1] }
+                {   name: teams[0], players: teamPlayers[0],
+                    name: teams[0], players: teamPlayers[1]},
+                { name: teams[1], players: teamPlayers[2] }
             ]
         };
     } else {
