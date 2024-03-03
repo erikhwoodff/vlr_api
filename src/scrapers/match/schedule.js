@@ -24,4 +24,4 @@ const fetchScheduleIds = async () => {
     }
 };
 
-module.exports = fetchScheduleIds;
+module.exports = { fetchScheduleIds };
