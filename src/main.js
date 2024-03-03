@@ -479,16 +479,13 @@ app.get("/api/rankings/:region", async (req, res) => {
     });
 // Schedule
 app.get("/api/schedule/:id?", async (req, res) => {
-    const id = req.params.id;
-    if(!id) {
-        res.json({ status: "Failed", error: "No Event ID provided" });
-        return;
+    try {
+        const matchIds = await fetchScheduleIds(); // Now called without an id
+        res.json({ status: "Success", data: matchIds });
+    } catch (err) {
+        console.error(`Error fetching match IDs: ${err}`);
+        res.status(500).json({ status: "Failed", error: err.message });
     }
-    fetchScheduleIds(req.params.id).then((data) => {
-        res.json({ status: "Success", data: data });
-    }).catch((err) => {
-        res.json({ status: "Failed", error: err });
-    });
 });
 // Teams
 app.get("/api/team/:id", async (req, res) => {
