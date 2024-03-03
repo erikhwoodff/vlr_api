@@ -27,32 +27,31 @@ const fetchMatchDetails = async (matchId) => {
     const datetime = $(".moment-tz-convert[data-utc-ts]").first().attr("data-utc-ts");
     const teams = $(".match-header-link-name .wf-title-med").map((i, elem) => $(elem).text().trim()).get();
 
-    // Extracting player names for each team
-    const teamPlayers = $(".vm-stats-game[data-game-id='all'] .wf-table-inset.mod-overview").map((index, element) => {
-        const playerNames = $(element).find('.mod-player').map((i, playerElem) => {
-            let playerName = $(playerElem).find('.text-of').text().trim(); // This should grab the player's name cleanly
-            // Remove any additional text such as team tags if they are not part of the actual name
-            return playerName.replace(/[^\w\s]/gi, '').trim(); // Adjust regex as necessary
-        }).get().slice(0, 5); // Take only the first 5 players for each team
-        return playerNames;
+    // Extracting player names for all teams
+    const allPlayers = $(".vm-stats-game[data-game-id='all'] .wf-table-inset.mod-overview .mod-player").map((i, playerElem) => {
+        let playerName = $(playerElem).find('.text-of').text().trim(); // Grab the clean player's name
+        // Clean up the player's name further if necessary
+        playerName = playerName.replace(/[^\w\s]/gi, '').trim(); // Adjust regex as needed
+        return playerName;
     }).get();
 
-    // Assuming there are only two teams, associate the players with the correct teams
-    if (teams.length === 2) {
+    // Split the players into two groups of five
+    const teamOnePlayers = allPlayers.slice(0, 5);
+    const teamTwoPlayers = allPlayers.slice(5, 10);
+
+    // Associate the players with their respective teams
+    const teamDetails = teams.map((teamName, index) => {
         return {
-            matchId,
-            datetime,
-            teams: [
-                {   name: teams[0], players: teamPlayers[0],
-                    name: teams[0], players: teamPlayers[1]},
-                { name: teams[1], players: teamPlayers[2] }
-            ]
+            name: teamName,
+            players: index === 0 ? teamOnePlayers : teamTwoPlayers
         };
-    } else {
-        // Handle cases where there are not exactly two teams
-        console.error('Unexpected number of teams found');
-        return { matchId, datetime, teams: [] };
-    }
+    });
+
+    return {
+        matchId,
+        datetime,
+        teams: teamDetails
+    };
 };
 
 
