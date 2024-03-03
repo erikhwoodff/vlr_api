@@ -44,7 +44,7 @@ const fetchMatchDetails = async (matchId) => {
     };
 };
 
-const fetchScheduleDetails = async () => {
+const fetchSchedule = async () => {
     try {
         const matchIds = await fetchScheduleIds();
         for (const matchId of matchIds) {
@@ -56,4 +56,4 @@ const fetchScheduleDetails = async () => {
     }
 };
 
-module.exports = { fetchMatchDetails };
+module.exports = { fetchSchedule };
