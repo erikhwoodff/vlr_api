@@ -2,14 +2,18 @@ const axios = require('axios');
 const cheerio = require('cheerio');
 
 const fetchScheduleIds = async () => {
+    console.log('Starting to fetch schedule IDs...');
     try {
+        console.log('Sending request to vlr.gg/matches...');
         const response = await axios.get(`https://www.vlr.gg/matches`);
+        console.log('Response received, loading HTML into cheerio...');
         const $ = cheerio.load(response.data);
 
         // Log the beginning of the HTML content to check
-        console.log($.html().substring(0, 500));
+        console.log('First 500 characters of HTML:', $.html().substring(0, 500));
 
         const matchIds = [];
+        console.log('Selecting match links from HTML...');
         const matchLinks = $("a[href*='/matches/']");
 
         // If no match links are found, log an appropriate message
@@ -18,6 +22,7 @@ const fetchScheduleIds = async () => {
             return matchIds; // Return an empty array as there are no match IDs
         }
 
+        console.log(`Found ${matchLinks.length} match links, extracting IDs...`);
         matchLinks.each((i, element) => {
             const href = $(element).attr("href");
             const matchId = href.split('/')[2];
@@ -35,4 +40,6 @@ const fetchScheduleIds = async () => {
 };
 
 module.exports = { fetchScheduleIds };
+
+
 
