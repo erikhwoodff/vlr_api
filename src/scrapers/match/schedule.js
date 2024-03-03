@@ -30,6 +30,5 @@ const fetchScheduleIds = async () => {
         throw err;
     }
 };
-};
 
 module.exports = { fetchScheduleIds };
