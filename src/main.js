@@ -479,13 +479,12 @@ app.get("/api/rankings/:region", async (req, res) => {
     });
 // Schedule
 app.get("/api/schedule/:id?", async (req, res) => {
-    try {
-        const matchIds = await fetchSchedule(); // Now called without an id
+    fetchSchedule.then((data) => {
         res.json({ status: "Success", data: data });
-    } catch (err) {
-        res.status(500).json({ status: "Failed", error: err });
-    }
-});
+    }).catch((err) => {
+        res.json({ status: "Failed", error: err });
+    });
+});    
 // Teams
 app.get("/api/team/:id", async (req, res) => {
     fetchOneTeam(req.params.id).then((data) => {
