@@ -20,6 +20,7 @@ const { fetchGamesMatch } = require('./scrapers/match/games');
 const { fetchStatsMatch } = require('./scrapers/match/stats');
 const { fetchAllMatches } = require('./scrapers/match/all');
 const { fetchOneMatch } = require('./scrapers/match/one');
+const { fetchScheduleId } = require('./scrapers/match/schedule');
 const { fetchMatchIds } = require('./scrapers/match/history'); // Added this. Doesn't currently work. See match history below...
 const { fetchOnePlayer } = require('./scrapers/player/one');
 const { fetchOneTeam } = require('./scrapers/team/one');
@@ -258,6 +259,14 @@ app.get("/api", (req, res) => {
                 ],
             },
             {
+                name: "Schedule",
+                description: "Returns a list of scheduled matches",
+                url: "/api/schedule",
+                method: "GET",
+                params: [],
+                returns: "Array of Match Objects"
+            },
+            {
                 name: "Team",
                 description: "Returns a single team",
                 url: "/api/team/:id",
@@ -467,6 +476,19 @@ app.post("/api/players", async (req, res) => {
 // Rankings
 app.get("/api/rankings/:region", async (req, res) => {
     res.json({ status: "Success", data: "WIP" });
+});
+// Schedule
+app.get("/api/schedule", async (req, res) => {
+    try {
+        console.log("Fetching match IDs for schedule:", req.params.teamId); // Log the team ID
+        const teamId = req.params.teamId;
+        const matchIds = await fetchMatchIds(teamId);
+        console.log("Match IDs fetched:", matchIds); // Log the fetched match IDs
+        res.json({ status: "Success", data: matchIds });
+    } catch (error) {
+        console.error("Error fetching match IDs:", error); // Log any errors
+        res.status(500).json({ status: "Failed", error: error.message });
+    }
 });
 // Teams
 app.get("/api/team/:id", async (req, res) => {
