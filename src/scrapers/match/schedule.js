@@ -56,4 +56,4 @@ const fetchScheduleDetails = async () => {
     }
 };
 
-module.exports = { fetchScheduleDetails };
+module.exports = { fetchMatchDetails };
