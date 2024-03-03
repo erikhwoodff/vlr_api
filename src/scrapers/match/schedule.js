@@ -47,13 +47,19 @@ const fetchMatchDetails = async (matchId) => {
 const fetchSchedule = async () => {
     try {
         const matchIds = await fetchScheduleIds();
+        const scheduleDetails = []; // Initialize an array to hold all match details
+
         for (const matchId of matchIds) {
             const matchDetails = await fetchMatchDetails(matchId);
-            console.log(matchDetails);
+            scheduleDetails.push(matchDetails); // Add the details to the array
         }
+
+        return scheduleDetails; // Return the array containing all the match details
     } catch (err) {
         console.error('An error occurred:', err);
+        throw err; // Rethrow the error to be handled by the caller
     }
 };
 
+module.exports = { fetchSchedule };
 module.exports = { fetchSchedule };
