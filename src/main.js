@@ -20,7 +20,7 @@ const { fetchGamesMatch } = require('./scrapers/match/games');
 const { fetchStatsMatch } = require('./scrapers/match/stats');
 const { fetchAllMatches } = require('./scrapers/match/all');
 const { fetchOneMatch } = require('./scrapers/match/one');
-const { fetchScheduleDetails } = require('./scrapers/match/schedule');
+const { fetchSchedule } = require('./scrapers/match/schedule');
 const { fetchMatchIds } = require('./scrapers/match/history');
 const { fetchOnePlayer } = require('./scrapers/player/one');
 const { fetchOneTeam } = require('./scrapers/team/one');
@@ -264,7 +264,7 @@ app.get("/api", (req, res) => {
                 url: "/api/schedule",
                 method: "GET",
                 params: [],
-                returns: "Array of Match Objects"
+                returns: "Array of Match Data"
             },
             {
                 name: "Team",
@@ -480,11 +480,10 @@ app.get("/api/rankings/:region", async (req, res) => {
 // Schedule
 app.get("/api/schedule/:id?", async (req, res) => {
     try {
-        const matchIds = await fetchScheduleDetails(); // Now called without an id
-        res.json({ status: "Success", data: matchIds });
+        const matchIds = await fetchSchedule(); // Now called without an id
+        res.json({ status: "Success", data: data });
     } catch (err) {
-        console.error(`Error fetching match IDs: ${err}`);
-        res.status(500).json({ status: "Failed", error: err.message });
+        res.status(500).json({ status: "Failed", error: err });
     }
 });
 // Teams
