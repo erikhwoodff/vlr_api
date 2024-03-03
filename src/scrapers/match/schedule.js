@@ -25,34 +25,47 @@ const fetchMatchDetails = async (matchId) => {
     const $ = cheerio.load(response.data);
 
     const datetime = $(".moment-tz-convert[data-utc-ts]").first().attr("data-utc-ts");
-    const teams = $(".match-header-link-name .wf-title-med").map((i, elem) => $(elem).text().trim()).get();
+
+    // Extracting team names and IDs
+    const teams = $(".match-header-link").map((i, elem) => {
+        const teamName = $(elem).find('.wf-title-med').text().trim();
+        const href = $(elem).attr('href');
+        const teamId = href.split('/')[2]; // The team ID is the third part of the URL path
+        return {
+            id: teamId,
+            name: teamName,
+            players: []
+        };
+    }).get();
 
     // Extracting player names for all teams
     const allPlayers = $(".vm-stats-game[data-game-id='all'] .wf-table-inset.mod-overview .mod-player").map((i, playerElem) => {
         let playerName = $(playerElem).find('.text-of').text().trim(); // Grab the clean player's name
-        // Clean up the player's name further if necessary
-        playerName = playerName.replace(/[^\w\s]/gi, '').trim(); // Adjust regex as needed
+        playerName = playerName.replace(/[^\w\s]/gi, '').trim(); // Clean up the player's name
         return playerName;
     }).get();
 
-    // Split the players into two groups of five
+    // Split the players into two groups and associate them with their respective teams
     const teamOnePlayers = allPlayers.slice(0, 5);
     const teamTwoPlayers = allPlayers.slice(5, 10);
 
-    // Associate the players with their respective teams
-    const teamDetails = teams.map((teamName, index) => {
-        return {
-            name: teamName,
-            players: index === 0 ? teamOnePlayers : teamTwoPlayers
-        };
-    });
+    // Assuming there are only two teams, assign the players to the teams
+    if (teams.length === 2) {
+        teams[0].players = teamOnePlayers;
+        teams[1].players = teamTwoPlayers;
+    } else {
+        // Handle cases where there are not exactly two teams
+        console.error('Unexpected number of teams found');
+    }
 
     return {
         matchId,
         datetime,
-        teams: teamDetails
+        teams
     };
 };
+
+// ... rest of the script
 
 
 const fetchSchedule = async () => {
