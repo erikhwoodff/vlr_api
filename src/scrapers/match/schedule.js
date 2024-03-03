@@ -80,4 +80,3 @@ const fetchSchedule = async () => {
 };
 
 module.exports = { fetchSchedule };
-module.exports = { fetchSchedule };
