@@ -38,25 +38,20 @@ const fetchMatchDetails = async (matchId) => {
         };
     }).get();
 
-    // Extracting player names for all teams
-    const allPlayers = $(".vm-stats-game[data-game-id='all'] .wf-table-inset.mod-overview .mod-player").map((i, playerElem) => {
+    // Extracting player names and IDs for all teams
+    $(".vm-stats-game[data-game-id='all'] .wf-table-inset.mod-overview .mod-player").each((i, playerElem) => {
+        const playerLink = $(playerElem).find("a").attr("href");
+        const playerId = playerLink ? playerLink.split('/')[2] : null;
         let playerName = $(playerElem).find('.text-of').text().trim(); // Grab the clean player's name
         playerName = playerName.replace(/[^\w\s]/gi, '').trim(); // Clean up the player's name
-        return playerName;
-    }).get();
 
-    // Split the players into two groups and associate them with their respective teams
-    const teamOnePlayers = allPlayers.slice(0, 5);
-    const teamTwoPlayers = allPlayers.slice(5, 10);
-
-    // Assuming there are only two teams, assign the players to the teams
-    if (teams.length === 2) {
-        teams[0].players = teamOnePlayers;
-        teams[1].players = teamTwoPlayers;
-    } else {
-        // Handle cases where there are not exactly two teams
-        console.error('Unexpected number of teams found');
-    }
+        // Assign the player to the corresponding team
+        if (i < 5) {
+            teams[0].players.push({ name: playerName, id: playerId });
+        } else {
+            teams[1].players.push({ name: playerName, id: playerId });
+        }
+    });
 
     return {
         matchId,
@@ -64,6 +59,7 @@ const fetchMatchDetails = async (matchId) => {
         teams
     };
 };
+
 
 // ... rest of the script
 
