@@ -47,9 +47,9 @@ const fetchMatchDetails = async (matchId) => {
 
         // Assign the player to the corresponding team
         if (i < 5) {
-            teams[0].players.push({ name: playerName, id: playerId });
+            teams[0].players.push({ name: playerName, player_id: playerId });
         } else {
-            teams[1].players.push({ name: playerName, id: playerId });
+            teams[1].players.push({ name: playerName, player_id: playerId });
         }
     });
 
